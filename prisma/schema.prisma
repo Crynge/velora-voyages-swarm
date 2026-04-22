@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model AgencyProfileRecord {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  version   Int
+  name      String
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DemoBriefRecord {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  blurb     String
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TripRun {
+  id            String      @id @default(cuid())
+  title         String
+  status        String
+  modelName     String
+  profileSlug   String
+  briefData     String
+  workspaceData String
+  tripPlanData  String?
+  quoteData     String?
+  campaignData  String?
+  errorMessage  String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  completedAt   DateTime?
+  traceEvents   TraceEvent[]
+}
+
+model TraceEvent {
+  id          String   @id @default(cuid())
+  runId       String
+  stepIndex   Int
+  phase       String
+  agentKey    String
+  label       String
+  status      String
+  summary     String
+  payloadData String
+  createdAt   DateTime @default(now())
+  run         TripRun  @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId, stepIndex])
+}
