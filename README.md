@@ -1,5 +1,24 @@
 # Velora Voyages Swarm
 
+<!-- portfolio-seo:start -->
+![Stars](https://img.shields.io/github/stars/Crynge/velora-voyages-swarm?style=flat-square) ![License](https://img.shields.io/github/license/Crynge/velora-voyages-swarm?style=flat-square) ![Status](https://img.shields.io/badge/status-active-blue?style=flat-square)
+
+![Social Preview](docs/social-preview.png)
+
+> Luxury-adventure travel agency swarm demo with Next.js, Prisma, SQLite, Ollama, and premium agent handoffs.
+
+**GitHub Search Keywords:** travel agency ai demo, ollama swarm, nextjs travel app, luxury travel automation, ai itinerary planner, kimi ollama demo, travel agent swarm
+
+<!-- portfolio-seo:end -->
+
+<!-- portfolio-links:start -->
+<div align="center">
+
+[Documentation](docs) &middot; [Authors](AUTHORS.md) &middot; [Contributing](CONTRIBUTING.md) &middot; [Security](SECURITY.md) &middot; [Workflows](.github/workflows)
+
+</div>
+<!-- portfolio-links:end -->
+
 Luxury-adventure travel agency demo built with Next.js 15, TypeScript, Prisma, SQLite, and Ollama's OpenAI-compatible API.
 
 This repo is designed to feel viral on GitHub for the right reasons:
