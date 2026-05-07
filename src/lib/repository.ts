@@ -21,6 +21,8 @@ type RunWithTraceEvents = Prisma.TripRunGetPayload<{
   };
 }>;
 
+let ensureDemoDataPromise: Promise<void> | null = null;
+
 const emptyWorkspace = (brief: TravelerBrief, profileSlug: string): TripWorkspace => ({
   status: "idle",
   profileSlug,
@@ -67,8 +69,20 @@ export async function resetDemoData() {
   await prisma.demoBriefRecord.deleteMany();
   await prisma.agencyProfileRecord.deleteMany();
 
-  await prisma.agencyProfileRecord.create({
-    data: {
+  await seedDemoData();
+}
+
+async function seedDemoData() {
+  await prisma.agencyProfileRecord.upsert({
+    where: {
+      slug: veloraProfile.slug,
+    },
+    update: {
+      version: veloraProfile.version,
+      name: veloraProfile.name,
+      data: stringifyJson(veloraProfile),
+    },
+    create: {
       slug: veloraProfile.slug,
       version: veloraProfile.version,
       name: veloraProfile.name,
@@ -76,22 +90,40 @@ export async function resetDemoData() {
     },
   });
 
-  await prisma.demoBriefRecord.createMany({
-    data: demoBriefs.map((item) => ({
-      slug: item.slug,
-      title: item.title,
-      blurb: item.blurb,
-      data: stringifyJson(item.brief),
-    })),
-  });
+  for (const item of demoBriefs) {
+    await prisma.demoBriefRecord.upsert({
+      where: {
+        slug: item.slug,
+      },
+      update: {
+        title: item.title,
+        blurb: item.blurb,
+        data: stringifyJson(item.brief),
+      },
+      create: {
+        slug: item.slug,
+        title: item.title,
+        blurb: item.blurb,
+        data: stringifyJson(item.brief),
+      },
+    });
+  }
 }
 
 export async function ensureDemoData() {
-  const profileCount = await prisma.agencyProfileRecord.count();
+  if (!ensureDemoDataPromise) {
+    ensureDemoDataPromise = (async () => {
+      const profileCount = await prisma.agencyProfileRecord.count();
 
-  if (profileCount === 0) {
-    await resetDemoData();
+      if (profileCount === 0) {
+        await seedDemoData();
+      }
+    })().finally(() => {
+      ensureDemoDataPromise = null;
+    });
   }
+
+  await ensureDemoDataPromise;
 }
 
 export async function getAgencyProfile(slug = veloraProfile.slug): Promise<AgencyProfile> {
